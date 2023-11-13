@@ -1,0 +1,30 @@
+org: turinglabs
+app: rust
+service: axum
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  timeout: 30
+  memorySize: 1024
+  architecture: arm64
+  ecr:
+    images:
+      appimage:
+        path: ./
+        platform: linux/arm64
+
+functions:
+  api:
+    image:
+      name: appimage
+      entryPoint:
+        - '/usr/local/bin/api'
+    events:
+      - httpApi:
+          path: /
+          method: ANY
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
